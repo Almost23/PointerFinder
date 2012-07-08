@@ -40,6 +40,12 @@ public class PointerFinder {
 		values.get(0).add(0);
 	}
 
+	/**
+	 * Finds all potential pointers 1 level deeper than
+	 * the current level then increments the current level.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void findPointers() throws FileNotFoundException, IOException{
 		//if (curLevel > 0){
 		pointers.add(new SortedArrayList<Integer>());
@@ -80,19 +86,39 @@ public class PointerFinder {
 		curLevel++;
 	}
 
+	/**
+	 * Gets all the pointer addresses at all levels
+	 * @return an Array containing all pointers
+	 */
 	public ArrayList<SortedArrayList<Integer>> getPointers(){
 		return pointers;
 	}
 
+	/**
+	 * Gets all the offsets at all levels
+	 * Offsets are defined such that pointers.get(curlevel-1).contains(values.get(curlevel).get(i) + offsets.get(curlevel).get(i))
+	 * will always return a valid index 
+	 * @return an array of offsets
+	 */
 	public ArrayList<ArrayList<Integer>> getOffsets(){
 		return offsets;
 	}
 
+	/**
+	 * Gets the value associated with each pointer address for all levels
+	 * @return a array of values
+	 */
 	public ArrayList<ArrayList<Integer>> getValues(){
 		return values;
 	}
 
-	public void compareOffsets(PointerFinder other){		
+	/**
+	 * Compares all pointers at the current level. 
+	 * After pointers.get(curlevel) for each PointerFinder object
+	 * is equal to the intersection of obj1.pointers.get(curlevel) and obj2.pointers.get(curlevel) 
+	 * @param other the other PointerFinder with which to compare
+	 */
+	public void comparePointers(PointerFinder other){		
 		
 		ArrayList<Integer> otherPointers = other.getPointers().get(curLevel);
 		ArrayList<Integer> otherOffsets = other.getOffsets().get(curLevel);
@@ -130,6 +156,10 @@ public class PointerFinder {
 
 	}
 
+	/**
+	 * Finds all possible paths from the curent level down to the original code
+	 * @return a String containing all possible paths
+	 */
 	public String possiblePaths(){
 		String path = new String();
 		System.out.format("NUMBER OF POINTERS FOUND: %d\n", pointers.get(curLevel).size());
