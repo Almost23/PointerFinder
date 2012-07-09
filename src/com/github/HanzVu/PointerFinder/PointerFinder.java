@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class PointerFinder {
 	private final File dmp;
 	private final int maxOff;
-
 	private int curLevel;
 
 	private ArrayList<SortedArrayList<Integer> > pointers;
@@ -51,8 +50,8 @@ public class PointerFinder {
 		pointers.add(new SortedArrayList<Integer>());
 		offsets.add(new ArrayList<Integer>());
 		values.add(new ArrayList<Integer>());
-		//}
 
+		
 		int addr = 0;
 		int offset = 0;
 		byte[] fileBytes = new byte[4];
@@ -62,6 +61,7 @@ public class PointerFinder {
 		int numFound = 0;
 
 		try (FileInputStream fis = new FileInputStream(dmp)){
+			
 			while (fis.read(fileBytes) == 4){
 				int val = buf.getInt();
 				buf.reset();
@@ -135,7 +135,7 @@ public class PointerFinder {
 				otherPointers.remove(j);
 				otherOffsets.remove(j);
 				otherValues.remove(j);
-			} else if (offsets.get(curLevel).get(i) != otherOffsets.get(i)){
+			} else if (offsets.get(curLevel).get(i) != otherOffsets.get(j)){
 				pointers.get(curLevel).remove(i);
 				offsets.get(curLevel).remove(i);
 				values.get(curLevel).remove(i);
@@ -180,4 +180,5 @@ public class PointerFinder {
 
 		return path;
 	}
+	
 }

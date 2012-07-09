@@ -9,8 +9,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -25,6 +27,7 @@ public class Main extends JFrame implements ActionListener {
 	JButton loaddump1, loaddump2, start;
 	JTextField T_dump1, T_dump2, T_code1, T_code2, T_maxOff, T_DMAlevel;
 	JTextArea output;
+	JScrollPane outputScroll;
 	
 	/* */
 	private File dump1;
@@ -123,18 +126,22 @@ public class Main extends JFrame implements ActionListener {
 		loaddump1 = newButton(loaddump1, "open", B_Width, B_Height, 0, B_Height*0);
 		loaddump2 = newButton(loaddump2, "open", B_Width, B_Height, 0, B_Height*2);
 		
-		start = new JButton("Find Pointers");
-		start.setLocation(70, 130);
-		start.setSize(120, 20);
+		start = new JButton("Start");
+		start.setLocation(0, 130);
+		start.setSize(75, 20);
 		start.addActionListener(this);
 		gui.add(start);
 		
-		
 		output = new JTextArea();
 		output.setLocation(0,150);
-		output.setSize(280, 250);
-		output.setEditable(false);
-		gui.add(output);
+		output.setSize(270, 220);
+		
+		outputScroll = new JScrollPane(output);
+		outputScroll.setLocation(0,150);
+		outputScroll.setSize(270, 220);
+		outputScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		outputScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		gui.add(outputScroll);
 		
 		return gui;
 	}
@@ -205,7 +212,7 @@ public class Main extends JFrame implements ActionListener {
 				if (dump1 != null && dump2 != null && dump1.exists() && dump2.exists()){
 					PointerFinder dmp1 = new PointerFinder(dump1, code1, maxOffset);
 					PointerFinder dmp2 = new PointerFinder(dump2, code2, maxOffset);
-
+					
 					for (int i = 0; i < DMAlevel; i++){
 						try {
 							dmp1.findPointers();
