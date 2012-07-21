@@ -164,14 +164,14 @@ public class PointerFinder {
 		String path = new String();
 		System.out.format("NUMBER OF POINTERS FOUND: %d\n", pointers.get(curLevel).size());
 		for (int j = 0; j < pointers.get(curLevel).size(); j++){
-			path += String.format("pointer: 0x%08X ", pointers.get(curLevel).get(j));
-			path += String.format("offset: 0x%X ", offsets.get(curLevel).get(j));
+			path += String.format("pointer: 0x%08X\n", pointers.get(curLevel).get(j));
+			path += String.format("     offset: 0x%X\n", offsets.get(curLevel).get(j));
 			int address = values.get(curLevel).get(j) + offsets.get(curLevel).get(j);
 
 			for (int i = curLevel - 1; i > 0; i--){
 				int idx = pointers.get(i).indexOf(address);
 				if (idx >= 0){
-					path += String.format("offset: 0x%X ", offsets.get(i).get(idx));
+					path += String.format("     offset: 0x%X ", offsets.get(i).get(idx));
 					address = values.get(i).get(idx) + offsets.get(i).get(idx);
 				}
 			}

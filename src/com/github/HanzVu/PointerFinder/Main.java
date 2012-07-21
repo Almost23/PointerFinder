@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import com.github.HanzVu.PointerFinder.PointerFinder;
 
@@ -183,52 +184,66 @@ public class Main extends JFrame implements ActionListener {
 			}
 			
 		} else if (event.getSource() == start){
-				try { code1 = Integer.parseInt(T_code1.getText(), 16);}
-				catch (NumberFormatException e){
-					code1 = 0;
-					T_code1.setText(String.format("%08X", code1));
-					return;
-				}
-				
-				try { code2 = Integer.parseInt(T_code2.getText(), 16);}
-				catch (NumberFormatException e){
-					code2 = 0;
-					T_code2.setText(String.format("%08X", code2));
-					return;
-				}
-				
-				try { maxOffset = Integer.parseInt(T_maxOff.getText(), 16);}
-				catch (NumberFormatException e){
-					maxOffset = 0x8000;
-					T_maxOff.setText(String.format("%x", maxOffset));
-				}
-				
-				try { DMAlevel = Integer.parseInt(T_DMAlevel.getText());}
-				catch (NumberFormatException e){
-					DMAlevel = 1;
-					T_DMAlevel.setText(String.format("%x", DMAlevel));
-				}
-				
-				if (dump1 != null && dump2 != null && dump1.exists() && dump2.exists()){
-					PointerFinder dmp1 = new PointerFinder(dump1, code1, maxOffset);
-					PointerFinder dmp2 = new PointerFinder(dump2, code2, maxOffset);
-					
-					for (int i = 0; i < DMAlevel; i++){
-						try {
-							dmp1.findPointers();
-							dmp2.findPointers();
-						} catch (IOException e){
-							return;
-						}
-					}
+				Worker<Object, Object> worker = new Worker<>();
+				worker.execute();
+		}
+	}
+	
+	private class Worker<T,V> extends SwingWorker<T,V>{
 
-					dmp1.comparePointers(dmp2);
-					output.setText(dmp1.possiblePaths());
+		@Override
+		protected T doInBackground() throws Exception {
+			start.setEnabled(false);
+			try { code1 = Integer.parseInt(T_code1.getText(), 16);}
+			catch (NumberFormatException e){
+				code1 = 0;
+				T_code1.setText(String.format("%08X", code1));
+				return null;
+			}
+			
+			try { code2 = Integer.parseInt(T_code2.getText(), 16);}
+			catch (NumberFormatException e){
+				code2 = 0;
+				T_code2.setText(String.format("%08X", code2));
+				return null;
+			}
+			
+			try { maxOffset = Integer.parseInt(T_maxOff.getText(), 16);}
+			catch (NumberFormatException e){
+				maxOffset = 0x8000;
+				T_maxOff.setText(String.format("%x", maxOffset));
+			}
+			
+			try { DMAlevel = Integer.parseInt(T_DMAlevel.getText());}
+			catch (NumberFormatException e){
+				DMAlevel = 1;
+				T_DMAlevel.setText(String.format("%x", DMAlevel));
+			}
+			
+			if (dump1 != null && dump2 != null && dump1.exists() && dump2.exists()){
+				PointerFinder dmp1 = new PointerFinder(dump1, code1, maxOffset);
+				PointerFinder dmp2 = new PointerFinder(dump2, code2, maxOffset);
+				
+				for (int i = 0; i < DMAlevel; i++){
+					try {
+						dmp1.findPointers();
+						dmp2.findPointers();
+					} catch (IOException e){
+						return null;
+					}
 				}
-		
+
+				dmp1.comparePointers(dmp2);
+				output.setText(dmp1.possiblePaths());
+			}
+	
+			return null;
 		}
 		
-
+		@Override
+		public void done(){
+			start.setEnabled(true);
+		}
 		
 	}
 
