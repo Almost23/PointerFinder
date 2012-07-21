@@ -171,7 +171,7 @@ public class PointerFinder {
 			for (int i = curLevel - 1; i > 0; i--){
 				int idx = pointers.get(i).indexOf(address);
 				if (idx >= 0){
-					path += String.format("     offset: 0x%X ", offsets.get(i).get(idx));
+					path += String.format("     offset: 0x%X\n", offsets.get(i).get(idx));
 					address = values.get(i).get(idx) + offsets.get(i).get(idx);
 				}
 			}
